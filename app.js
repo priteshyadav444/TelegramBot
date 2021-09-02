@@ -3,6 +3,7 @@ const { Telegraf } = require("telegraf");
 const bot = new Telegraf("1965093141:AAFaJ7KC5GAtycbD_vOmeDjgLHo1kwzylWE");
 var dateFormat = require("dateformat");
 var cron = require('node-cron');
+var now = new Date();
 
 bot.command("start", (ctx) => {
     console.log(ctx.from);
@@ -12,10 +13,8 @@ bot.command("start", (ctx) => {
         {}
     );
 });
-cron.schedule('*/1 * * * *', () => {
-    console.log('running a task every minute');
-
-
+cron.schedule('*/30 * * * *', () => {
+    console.log('last update : ' + dateFormat(now, "isoTime"));
     axios
         .get(
             "https://api.apprenticeshipindia.org/opportunities/search?page=1&page_size=1&search=Boiler%20Attendant&locations[0][type]=district&locations[0][id]=5acbb46f1f174875c6506312&minqualification=5c406444c8eeab700c2d5666"
@@ -25,25 +24,26 @@ cron.schedule('*/1 * * * *', () => {
 
                 bot.telegram.sendMessage(
                     1978923007,
-                    " Comapany Name : " +
+                    "Comapany Name : " +
                     res.locations[0].location_name +
-                    " \n Total Vacancy : " +
+                    "\nTotal Vacancy : " +
                     res.number_of_vacancies +
-                    " \n Date : " +
-                    dateFormat(res.created_at.date, "mediumDate") +
-                    " \n Application Count : " +
+                    "\nDate : " +
+                    dateFormat(res.created_at.date, "mediumDate") + " " + dateFormat(res.created_at.date, "isoTime") +
+                    "\nApplication Count : " +
                     res.application_count +
-                    " \n City : " +
+                    "\nCity : " +
                     res.locations[0].address.city +
-                    " \nAddress : " +
+                    "\nAddress : " +
                     res.locations[0].address.address_1 +
                     "\n",
-                    parse_mode = "Markdown"
+
                 );
             });
         })
         .catch(function (error) {
-            console.log(error);
+            console.log("Error!");
+            console.log("Chack InternetConnection!")
         });
 
 });
@@ -58,17 +58,17 @@ bot.command("boilarstatus", (ctx) => {
 
                 bot.telegram.sendMessage(
                     ctx.chat.id,
-                    " Comapany Name : " +
+                    "Comapany Name : " +
                     res.locations[0].location_name +
-                    " \n Total Vacancy : " +
+                    "\nTotal Vacancy : " +
                     res.number_of_vacancies +
-                    " \n Date : " +
-                    dateFormat(res.created_at.date, "mediumDate") +
-                    " \n Application Count : " +
+                    "\nDate : " +
+                    dateFormat(res.created_at.date, "mediumDate") + " " + dateFormat(res.created_at.date, "isoTime") +
+                    "\nApplicationCount : " +
                     res.application_count +
-                    " \n City : " +
+                    "\nCity : " +
                     res.locations[0].address.city +
-                    " \nAddress : " +
+                    "\nAddress : " +
                     res.locations[0].address.address_1 +
                     "\n",
                     parse_mode = "Markdown"
